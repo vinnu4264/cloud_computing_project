@@ -30,6 +30,15 @@ jobs:
         run: |
           cd Scripts
           sh docker_image_build.sh
+  code_build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Management lambda build
+        run: |
+          pwd
+          python3 Scripts/package.py
+          ls -altr .
+          ls -altr ./Python/
   
   terraform_apply:
     needs: build
