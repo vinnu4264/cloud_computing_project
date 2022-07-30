@@ -32,6 +32,7 @@ jobs:
           sh docker_image_build.sh
   
   terraform_apply:
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
