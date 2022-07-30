@@ -33,4 +33,4 @@ override.tf.json
 .terraformrc
 terraform.rc
 
-Config_files/aws_config.yaml
+Docker/Config_files/aws_config.yaml
