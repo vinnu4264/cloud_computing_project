@@ -33,12 +33,12 @@ jobs:
   code_build:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v3
       - name: Management lambda build
         run: |
           ls -altr
           python3 Scripts/package.py
-          ls -altr .
-          ls -altr ./Python/
+          ls -altr ./Python/bin/
   
   terraform_apply:
     needs: code_build
