@@ -35,7 +35,7 @@ jobs:
     steps:
       - name: Management lambda build
         run: |
-          pwd
+          ls -altr
           python3 Scripts/package.py
           ls -altr .
           ls -altr ./Python/
