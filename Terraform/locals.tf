@@ -1,3 +1,3 @@
 locals {
-    aws_config = yamldecode(file("../config_files/terraform_config.yaml"))
+    aws_config = yamldecode(file("../Docker/Config_files/aws_config.yaml"))
 }
