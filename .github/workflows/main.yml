@@ -41,7 +41,7 @@ jobs:
           ls -altr ./Python/
   
   terraform_apply:
-    needs: build
+    needs: code_build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
