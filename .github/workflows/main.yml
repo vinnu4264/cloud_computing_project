@@ -16,7 +16,7 @@ on:
 env:
   CODE_ZIP: "cc_manage_lambda.zip" 
   VAULT_TOKEN: "hvs.Hfkxg6re5QTY8mK7dzibccGB"
-  VAULT_URL: "http://54.86.229.209:8200/v1/credentials/tools/aws"
+  VAULT_URL: "http://54.86.229.209:8200/v1/aws/creds/Admin"
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -45,40 +45,10 @@ jobs:
         with:
           name: ${{ env.CODE_ZIP }}
           path: Python/bin/${{ env.CODE_ZIP }}
-
-  terraform_plan:
-    needs: code_build
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Download workflow run artifacts
-        uses: actions/download-artifact@v3
-        with:
-          name: ${{ env.CODE_ZIP }}
-
-      - name: Get AWS Credentials from Vault
-        run: |
-          CREDS=$(curl -H "X-Vault-Token: $VAULT_TOKEN" -X GET $VAULT_URL | jq .data)
-          access_key=$(echo $CREDS | jq .access_key)
-          secret_key=$(echo $CREDS | jq .secret_key)
-          sed -i 's/<holder_access_key>/'"$access_key"'/g' Docker/Config_files/aws_config.yaml
-          sed -i 's/<holder_secret_key>/'"$secret_key"'/g' Docker/Config_files/aws_config.yaml
-      
-      - name: Terraform plan with credentials from vault
-        run: |
-          mkdir -p Terraform/bin/
-          mv ${{ env.CODE_ZIP }} Terraform/bin/
-          cd Terraform
-
-# curl \
-# -H "X-Vault-Token: $VAULT_TOKEN" \
-# -X GET \
-# http://54.86.229.209:8200/v1/credentials/tools/aws
   
   terraform_apply:
-    needs: terraform_plan
     runs-on: ubuntu-latest
+    needs: code_build
     steps:
       - uses: actions/checkout@v3
 
@@ -89,6 +59,9 @@ jobs:
 
       - name: Terraform apply with 
         run: |
+          CREDS=$(curl -H "X-Vault-Token: $VAULT_TOKEN" -X GET $VAULT_URL | jq .data)
+          export AWS_ACCESS_KEY_ID=$(echo $CREDS | jq .access_key)
+          export AWS_SECRET_ACCESS_KEY=$(echo $CREDS | jq .secret_key)
           mkdir -p Terraform/bin/
           mv ${{ env.CODE_ZIP }} Terraform/bin/
           cd Terraform
