@@ -38,8 +38,9 @@ jobs:
       - uses: actions/checkout@v3
       - name: Management lambda build
         run: |
-          python3 Python/package.py
-          ls -altr ./Python/bin/
+          cd Python/
+          python3 package.py
+  
       - name: Archive code zip
         uses: actions/upload-artifact@v3
         with:
