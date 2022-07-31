@@ -20,17 +20,16 @@ EOF
 resource "aws_lambda_function" "cc_management_lambda" {
   function_name = "cc_management_lambda"
   role          = aws_iam_role.lambdaiam.arn
-  handler       = "App.main.lambda_handler"
-#   layers = [ aws_lambda_layer_version.common_lambda_layer.id ]
+  handler       = "index.lambda_handler"
   timeout = "300"
-  filename = "./bin/cc_manage_lambda.zip"
-  source_code_hash = filebase64sha256("./bin/cc_manage_lambda.zip")
+  filename = "${path.module}/python/cc_manage.zip"
+  source_code_hash = filebase64sha256("${path.module}/python/cc_manage.zip")
 
   runtime = "python3.7"
+}
 
-  environment {
-    variables = {
-      foo = "bar"
-    }
-  }
+data "archive_file" "zip_the_python_code" {
+type        = "zip"
+source_dir  = "${path.module}/cc_manage/"
+output_path = "${path.module}/python/cc_manage.zip"
 }

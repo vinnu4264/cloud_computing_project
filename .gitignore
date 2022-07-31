@@ -36,3 +36,4 @@ terraform.rc
 
 # Docker/Config_files/aws_config.yaml
 Python/bin/*
+**/terraform_apply.sh
