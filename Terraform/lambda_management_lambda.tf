@@ -1,5 +1,5 @@
 resource "aws_iam_role" "lambdaiam" {
-  name = "lambdaiam"
+  name               = "lambdaiam"
   assume_role_policy = <<EOF
 {
   "Version": "2012-10-17",
@@ -18,18 +18,12 @@ EOF
 }
 
 resource "aws_lambda_function" "cc_management_lambda" {
-  function_name = "cc_management_lambda"
-  role          = aws_iam_role.lambdaiam.arn
-  handler       = "index.lambda_handler"
-  timeout = "300"
-  filename = "${path.module}/cc_manage.zip"
-  source_code_hash = filebase64sha256("${path.module}/cc_manage.zip")
-
-  runtime = "python3.7"
+  function_name    = "cc_management_lambda"
+  role             = aws_iam_role.lambdaiam.arn
+  handler          = "lambda_function.lambda_handler"
+  timeout          = "300"
+  filename         = "nametest.zip"
+  source_code_hash = data.archive_file.zip_the_python_code.output_base64sha256
+  runtime          = "python3.7"
 }
 
-data "archive_file" "zip_the_python_code" {
-type        = "zip"
-source_dir  = "${path.module}/cc_manage/"
-output_path = "${path.module}/cc_manage.zip"
-}
