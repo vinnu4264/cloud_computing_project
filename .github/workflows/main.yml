@@ -59,17 +59,17 @@ jobs:
 
       - name: Get AWS Credentials from Vault
         run: |
-          curl -H "X-Vault-Token: $VAULT_TOKEN" -X GET $VAULT_URL
-          sed -i 's/<holder_access_key>/<new_holder_access_key>/g' Docker/Config_files/aws_config.yaml
-          sed -i 's/<holder_secret_key>/<new_holder_secret_key>/g' Docker/Config_files/aws_config.yaml
+          CREDS=$(curl -H "X-Vault-Token: $VAULT_TOKEN" -X GET $VAULT_URL | jq .data)
+          access_key=$(echo $CREDS | jq .access_key)
+          secret_key=$(echo $CREDS | jq .secret_key)
+          sed -i 's/<holder_access_key>/'"$access_key"'/g' Docker/Config_files/aws_config.yaml
+          sed -i 's/<holder_secret_key>/'"$secret_key"'/g' Docker/Config_files/aws_config.yaml
       
       - name: Terraform plan with credentials from vault
         run: |
           mkdir -p Terraform/bin/
           mv ${{ env.CODE_ZIP }} Terraform/bin/
           cd Terraform
-          terraform init
-          terraform plan
 
 # curl \
 # -H "X-Vault-Token: $VAULT_TOKEN" \
@@ -93,5 +93,5 @@ jobs:
           mv ${{ env.CODE_ZIP }} Terraform/bin/
           cd Terraform
           terraform init
-          # terraform apply --auto-approve
+          terraform apply --auto-approve
 
