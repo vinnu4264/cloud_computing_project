@@ -1,11 +1,7 @@
-resource "aws_security_group" "cc_sg" {
-  name = ""
-}
-
 resource "aws_security_group" "cc_sg_allow_all" {
   name        = "all_traffic"
   description = "Allow all traffic"
-  vpc_id      = aws_vpc.main.id
+  vpc_id      = "sg-0ab12701ed789ca46"
 
   ingress {
     description      = "TLS from VPC"
