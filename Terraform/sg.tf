@@ -1,7 +1,7 @@
 resource "aws_security_group" "cc_sg_allow_all" {
   name        = "all_traffic"
   description = "Allow all traffic"
-  vpc_id      = "sg-0ab12701ed789ca46"
+  vpc_id      = "vpc-04b730416f7b93064"
 
   ingress {
     description      = "TLS from VPC"
