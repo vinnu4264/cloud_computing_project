@@ -13,6 +13,10 @@ on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
+env:
+  CODE_ZIP_DIR: "cc_manage_lambda" 
+  CODE_ZIP: "cc_manage_lambda.zip" 
+
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
@@ -35,14 +39,27 @@ jobs:
         run: |
           python3 Scripts/package.py
           ls -altr ./Python/bin/
+      - name: Archive code zip
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ env.CODE_ZIP }}
+          path: Python/bin/${{ env.CODE_ZIP }}
 
   terraform_plan:
     needs: code_build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+
+      - name: Download workflow run artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: ${{ env.CODE_ZIP }}
+      
       - name: Terraform apply with 
         run: |
+          mkdir -p Terraform/bin/
+          mv ${{ env.CODE_ZIP }} Terraform/bin/
           cd Terraform
           terraform init
           terraform plan
@@ -52,8 +69,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+
+      - name: Download workflow run artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: ${{ env.CODE_ZIP }}
+
       - name: Terraform apply with 
         run: |
+          mkdir -p Terraform/bin/
+          mv ${{ env.CODE_ZIP }} Terraform/bin/
           cd Terraform
           terraform init
           terraform apply --auto-approve
