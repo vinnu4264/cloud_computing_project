@@ -2,7 +2,7 @@ resource "aws_instance" "cc_ec2" {
   count=1
   ami           = data.aws_ami.ubuntu.id
   instance_type = "t3.micro"
-  security_groups = [aws_security_group.cc_sg_allow_all]
+  security_groups = [aws_security_group.cc_sg_allow_all.name]
 
   tags = {
     Name = "App_instance_${count.index}"
