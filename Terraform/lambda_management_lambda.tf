@@ -22,8 +22,8 @@ resource "aws_lambda_function" "cc_management_lambda" {
   role          = aws_iam_role.lambdaiam.arn
   handler       = "index.lambda_handler"
   timeout = "300"
-  filename = "${path.module}/python/cc_manage.zip"
-  source_code_hash = filebase64sha256("${path.module}/python/cc_manage.zip")
+  filename = "${path.module}/cc_manage.zip"
+  source_code_hash = filebase64sha256("${path.module}/cc_manage.zip")
 
   runtime = "python3.7"
 }
@@ -31,5 +31,5 @@ resource "aws_lambda_function" "cc_management_lambda" {
 data "archive_file" "zip_the_python_code" {
 type        = "zip"
 source_dir  = "${path.module}/cc_manage/"
-output_path = "${path.module}/python/cc_manage.zip"
+output_path = "${path.module}/cc_manage.zip"
 }
