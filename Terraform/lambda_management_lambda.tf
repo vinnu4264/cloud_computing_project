@@ -20,7 +20,7 @@ EOF
 resource "aws_lambda_function" "cc_management_lambda" {
   function_name = "cc_management_lambda"
   role          = aws_iam_role.lambdaiam.arn
-  handler       = "cc_manage_lambda.main.lambda_handler"
+  handler       = "App.main.lambda_handler"
 #   layers = [ aws_lambda_layer_version.common_lambda_layer.id ]
   timeout = "300"
   filename = "./bin/cc_manage_lambda.zip"

@@ -1,3 +1,0 @@
-yfinance
-pandas
-pandas_datareader
