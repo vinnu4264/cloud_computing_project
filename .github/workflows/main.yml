@@ -48,7 +48,7 @@ jobs:
           terraform plan
   
   terraform_apply:
-    needs: code_build
+    needs: terraform_plan
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
