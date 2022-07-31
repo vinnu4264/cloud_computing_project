@@ -61,12 +61,17 @@ jobs:
       - name: Terraform apply with 
         run: |
           CREDS=$(curl -H "X-Vault-Token: $VAULT_TOKEN" -X GET $VAULT_URL | jq .data)
-          export AWS_ACCESS_KEY_ID=$(echo $CREDS | jq .access_key)
-          export AWS_SECRET_ACCESS_KEY=$(echo $CREDS | jq .secret_key)
+          export AWS_ACCESS_KEY_ID=$(echo $CREDS | jq .access_key | sed 's/\"//g' )
+          export AWS_SECRET_ACCESS_KEY=$(echo $CREDS | jq .secret_key | sed 's/\"//g' )
           export AWS_DEFAULT_REGION=us-east-1
-          echo $AWS_ACCESS_KEY_ID
-          echo $AWS_SECRET_ACCESS_KEY
-          echo $AWS_DEFAULT_REGION
+          echo "" > ~/.aws/credentials
+          cat <<EOT >> ~/.aws/credentials
+          [default]
+          aws_access_key_id = $AWS_ACCESS_KEY_ID
+          aws_secret_access_key = $AWS_SECRET_ACCESS_KEY
+          EOT
+          chmod 600 ~/.aws/credentials
+          sleep 10
           mkdir -p Terraform/bin/
           mv ${{ env.CODE_ZIP }} Terraform/bin/
           cd Terraform
