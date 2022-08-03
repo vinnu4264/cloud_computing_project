@@ -1,3 +1,5 @@
-# locals {
-#     aws_config = yamldecode(file("../Docker/Config_files/aws_config.yaml"))
-# }
+locals {
+  
+    aws_ecr_registry = "${data.aws_caller_identity.current.account_id}.dkr.ecr.${var.region}.amazonaws.com"
+
+}
