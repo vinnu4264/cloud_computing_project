@@ -6,9 +6,9 @@ terraform {
     }
 
     docker = {
-      source  = "kreuzwerker/docker"
+      source = "kreuzwerker/docker"
     }
-    
+
   }
   backend "s3" {
     region = "us-east-1"
