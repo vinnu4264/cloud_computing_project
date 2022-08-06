@@ -27,8 +27,10 @@ resource "aws_lambda_function" "cc_management_lambda" {
   runtime          = "python3.7"
 
   environment {
-    VAULT_TOKEN = var.VAULT_TOKEN
-    VAULT_URL= var.VAULT_URL
+    variables = {
+      VAULT_TOKEN = var.VAULT_TOKEN
+      VAULT_URL   = var.VAULT_URL
+    }
   }
 
 }
