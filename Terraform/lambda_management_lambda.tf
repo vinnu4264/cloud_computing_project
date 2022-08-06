@@ -25,5 +25,11 @@ resource "aws_lambda_function" "cc_management_lambda" {
   filename         = "management_lambda.zip"
   source_code_hash = data.archive_file.zip_the_python_code.output_base64sha256
   runtime          = "python3.7"
+
+  environment {
+    VAULT_TOKEN = var.VAULT_TOKEN
+    VAULT_URL= var.VAULT_URL
+  }
+
 }
 

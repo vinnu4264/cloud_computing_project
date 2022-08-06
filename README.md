@@ -1,10 +1,11 @@
 # Cloud Computing Project
 
+## Folders description
+|Folder|Description|
+|-|-|
+|.github/workflows|Holds github workflow pipeline as code|
+|application|Dockerfile with  python code that gets converted to image and stored in AWS-ECR that is used by ECS|
+|Terraform| InfrastructureAsCode to provision Lambda, ecr, roles, security groups in AWS |
+|Terraform/code| Python code for lambda |
+| Scripts | Holds custom scripts written to manage VCS and IAC deployments from local environment |
 
-## Setup Git
-git config --add --local core.sshCommand 'ssh -i ~/.ssh/id_rsa_sharat'
-
-## Important configurations
-|File|Importance|
-|----|----------|
-|[Config_files/](Config_files/)| Location to store all configuration files|

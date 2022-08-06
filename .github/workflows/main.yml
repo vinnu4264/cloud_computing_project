@@ -33,5 +33,5 @@ jobs:
           sleep 10
           cd Terraform
           terraform init --reconfigure
-          terraform apply --auto-approve
+          terraform apply --auto-approve -var VAULT_TOKEN=$VAULT_TOKEN
 
