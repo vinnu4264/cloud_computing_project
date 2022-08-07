@@ -10,12 +10,12 @@ terraform {
     }
 
     # google = {
-    #   source = "hashicorp/google"
+    #   source  = "hashicorp/google"
     #   version = "4.31.0"
     # }
 
     vault = {
-      source = "hashicorp/vault"
+      source  = "hashicorp/vault"
       version = "3.8.1"
     }
 

@@ -11,11 +11,13 @@ provider "docker" {
   }
 }
 
-# provider "google" {
-#   # Configuration options
-# }
+provider "google" {
+  # credentials = file("gcp_creds.json")
+  credentials = data.vault_generic_secret.gcp_creds.data_json
+  # project = "cloudcomputingproject-358720"
+}
 
 provider "vault" {
-  token = "hvs.Hfkxg6re5QTY8mK7dzibccGB"
+  token   = "hvs.Hfkxg6re5QTY8mK7dzibccGB"
   address = "http://54.86.229.209:8200/"
 }

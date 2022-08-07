@@ -8,4 +8,5 @@
 |Terraform| InfrastructureAsCode to provision Lambda, ecr, roles, security groups in AWS |
 |Terraform/code| Python code for lambda |
 | Scripts | Holds custom scripts written to manage VCS and IAC deployments from local environment |
+|Website| Holds the website related code. Website is built using the Python Flask module|
 

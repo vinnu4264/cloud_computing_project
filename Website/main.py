@@ -7,12 +7,17 @@ from time import sleep
 class boto_base:
     
     def __init__(self, creds, region_name="us-east-1"):
+        # AWS ECS Connection
         self.session = boto3.Session(
             aws_access_key_id=creds.get('access_key'),
             aws_secret_access_key=creds.get('secret_key'),
             region_name = region_name
             )
         self.client = self.session.client('ecs')
+        # AWS S3 Connection
+        self.s3 = boto3.resource('s3')
+        self.object = self.s3.Object('cloud-computing-data-store','warm_up.json')
+
         self.wup_file = "data/warm_up.json"
 
         # Cluster Name
@@ -29,7 +34,11 @@ class boto_base:
 
         print("[INFO] AWS Session creation completed")
         
-    
+    def warm_up_file_get(self):
+        warm_up_file = json.loads(self.object.get()['Body'].read())
+        return warm_up_file
+
+
     def get_ecs_data(self):
         # Tasks information
         running_count = 0
@@ -90,17 +99,15 @@ class boto_base:
             "Start": time_line['start'],
             "end": time_line['end']
         }
-        cur_data = self.get_warmup_log()
+        cur_data = self.warm_up_file_get()
         cur_data.append(warm_up_data)
-        with open(self.wup_file, "w") as f:
+        with open("/tmp/warm_up.json", "w") as f:
             json.dump(cur_data, f, ensure_ascii=False, indent=4)
+        self.put_warmup_log()
         return cur_data
 
-    def get_warmup_log(self):
-        f = open(self.wup_file, "r")
-        cur_data = json.load(f)
-        f.close()
-        return cur_data
+    def put_warmup_log(self):
+        self.object.upload_file("/tmp/warm_up.json")
 
 # Get credentials
 VAULT_URL="http://54.86.229.209:8200/v1/credentials/tools/aws"
@@ -124,16 +131,16 @@ def docs():
         action = boto_base(credentials)
         action.update_task_count(desired_count)
         data = action.get_ecs_data()
-        return render_template("tools.html", title="CCProject - Tools", act="tools", data=data, warm_data=action.get_warmup_log())
+        return render_template("tools.html", title="CCProject - Tools", act="tools", data=data, warm_data=action.warm_up_file_get())
     else:
         # Get current ECS data from AWS
         action = boto_base(credentials)
         data = action.get_ecs_data()
-        return render_template("tools.html", title="CCProject - Tools", act="tools", data=data, warm_data=action.get_warmup_log())
+        return render_template("tools.html", title="CCProject - Tools", act="tools", data=data, warm_data=action.warm_up_file_get())
 
 @app.route("/data")
 def about():
     return render_template("datasheet.html", title="CCProject - Data", act="data")
 
 if __name__ == "__main__":
-    app.run(debug=True, port=3030)
+    app.run(debug=True, port=8080)
