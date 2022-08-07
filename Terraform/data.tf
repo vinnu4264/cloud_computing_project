@@ -16,6 +16,10 @@ data "aws_vpc" "this" {
 #   vpc_id = data.aws_vpc.this.id
 # }
 
+data "vault_generic_secret" "secret_data" {
+  path = "aws/creds/Admin"
+}
+
 
 
 

@@ -11,6 +11,11 @@ provider "docker" {
   }
 }
 
-provider "google" {
-  # Configuration options
+# provider "google" {
+#   # Configuration options
+# }
+
+provider "vault" {
+  token = "hvs.Hfkxg6re5QTY8mK7dzibccGB"
+  address = "http://54.86.229.209:8200/"
 }

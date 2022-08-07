@@ -28,7 +28,7 @@ resource "aws_lambda_function" "cc_management_lambda" {
 
   environment {
     variables = {
-      VAULT_TOKEN = var.VAULT_TOKEN
+      VAULT_TOKEN = data.vault_generic_secret.secret_data.data["access_key"]
       VAULT_URL   = var.VAULT_URL
     }
   }

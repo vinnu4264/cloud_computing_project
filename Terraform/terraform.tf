@@ -9,9 +9,14 @@ terraform {
       source = "kreuzwerker/docker"
     }
 
-    google = {
-      source = "hashicorp/google"
-      version = "4.31.0"
+    # google = {
+    #   source = "hashicorp/google"
+    #   version = "4.31.0"
+    # }
+
+    vault = {
+      source = "hashicorp/vault"
+      version = "3.8.1"
     }
 
   }
