@@ -10,3 +10,7 @@ provider "docker" {
     password = data.aws_ecr_authorization_token.token.password
   }
 }
+
+provider "google" {
+  # Configuration options
+}

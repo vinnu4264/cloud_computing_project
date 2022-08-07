@@ -1,0 +1,58 @@
+.navbar-brand {
+    color: orange !important;
+    font-weight: bold;
+}
+
+
+/* TOOLS PAGE STYLING */
+.btn{
+    background-color: rgb(47, 68, 68) !important; 
+    color: antiquewhite !important;
+    margin-top: 10px !important;
+    margin-bottom: 10px !important;
+    width: 150px;
+}
+
+.row-header{
+    text-align: right;
+    /* background-color: antiquewhite; */
+}
+.row-value{
+    text-align: left;
+    /* background-color: bisque; */
+    padding-left: 2rem;
+}
+
+.form-range{
+    width: auto;
+}
+
+.flex-container{
+    display: block;
+    justify-content: center;
+    flex-wrap: wrap;
+    max-width: 75%;
+
+}
+
+.flexbox-item{
+    border: 2px solid rgb(201, 219, 219);
+    padding: 10px;
+    margin: 5px;
+    margin-top: 10px;
+}
+
+.fi1{
+    min-width: 100%;
+    text-align: center;
+    border: 0px;
+    color: rgb(47, 100, 107);
+}
+
+.modal-content{
+    padding: 10px;
+}
+
+.btn.warm{
+    width: fit-content;
+}

@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block body %}
+
+<center>
+<div class="flex-container">
+    <div class="flexbox-item fi1">
+        <!-- Warm Up Space -->
+        <h2>ECS Management Space</h2>
+    </div>
+    <div class="flexbox-item fi2">
+        <!-- Current Data -->
+        <table>
+            <tr>
+                <td class="row-header">Cluster Name</td>
+                <td class="row-value">{{data.cluster_name}}</td>
+            </tr>
+            <tr>
+                <td class="row-header">Cluster Arn</td>
+                <td class="row-value">{{data.cluster_arn}}</td>
+            </tr>
+            <tr>
+                <td class="row-header">Current containers</td>
+                <td class="row-value">
+                    <span style="color: rgb(1, 128, 128); font-weight: bold; font-size: 20px;">{{data.running_count}}</span>
+                    <span class="px-2" style="font-size: 15px; color: darkcyan;">task(s) currently running</span>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div class="flexbox-item fi3">
+        <form method="post">
+            <label for="des_count" class="form-label">Desired number of containers</label>
+            <input type="range" class="form-range" min="0" max="10" step="1" name="des_count" id="des_count" value={{data.running_count}}  oninput="this.nextElementSibling.value = this.value">
+            <output></output>
+            <br>      
+            <input onclick="$('#loading').show();" class="btn" value="Update" type="submit">
+        </form>
+    </div>
+    <!-- <div class="flexbox-item fi4">
+        <form method="post">
+            <label for="des_count" class="form-label">Stop All containers</label>
+            <input onclick="$('#loading').show();" class="btn" value>
+        </form>
+    </div> -->
+</div>
+<!-- Large modal -->
+<button type="button" class="btn btn-primary warm" data-toggle="modal" data-target=".bd-example-modal-lg">ECS Warming Log</button>
+
+<div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <h3 style="color: lightcoral;">ECS WARM UP LOG</h3>
+      <!-- TABLE DATA : WARM UP LOG -->
+      <table class="table">
+        <thead>
+            <tr>
+              <th scope="col">Date</th>
+              <th scope="col">Current</th>
+              <th scope="col">Desired</th>
+              <th scope="col">Duration</th>
+              <th scope="col">Start</th>
+              <th scope="col">End</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for item in warm_data %}
+                <tr>
+                    <td>{{ item.time }}</td>
+                    <td>{{ item.current }}</td>
+                    <td>{{ item.desired }}</td>
+                    <td>{{ item.Duration }}</td>
+                    <td>{{ item.Start }}</td>
+                    <td>{{ item.end }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+</center>
+
+
+{% endblock %}

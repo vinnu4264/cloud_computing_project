@@ -9,6 +9,11 @@ terraform {
       source = "kreuzwerker/docker"
     }
 
+    google = {
+      source = "hashicorp/google"
+      version = "4.31.0"
+    }
+
   }
   backend "s3" {
     region = "us-east-1"

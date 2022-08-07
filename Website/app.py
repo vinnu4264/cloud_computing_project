@@ -1,8 +1,8 @@
-import boto3
-import os
-import requests
-from time import sleep
+from flask import Flask, render_template, request
+import boto3, requests, json
 from datetime import datetime
+from time import sleep
+
 
 class boto_base:
     
@@ -13,6 +13,7 @@ class boto_base:
             region_name = region_name
             )
         self.client = self.session.client('ecs')
+        self.wup_file = "data/warm_up.json"
 
         # Cluster Name
         self.cluster = self.client.list_clusters().get("clusterArns")[0]
@@ -58,6 +59,7 @@ class boto_base:
         )
         # Scale tasks
         current_count = self.tasks_count
+        log_count = self.tasks_count
         counter=0
         while desired_count<current_count:
             self.client.stop_task(
@@ -70,48 +72,68 @@ class boto_base:
         # Post update validation
         cur_data = self.get_ecs_data()
         while cur_data["running_count"]<desired_count:
-            sleep(5)
+            sleep(2)
             cur_data = self.get_ecs_data()
         end_time = datetime.now()
         time_line = {
-            "start": start_time.strftime("%Y-%m-%dT%H:%M:%S.%f")[:-3],
-            "end": end_time.strftime("%Y-%m-%dT%H:%M:%S.%f")[:-3]
+            "start": start_time.strftime("%H:%M:%S.%f")[:-3],
+            "end": end_time.strftime("%H:%M:%S.%f")[:-3]
         }
         diff = (end_time-start_time).total_seconds()
-        return {
-            "status": f"{self.tasks_count}/{desired_count}",
-            "duration": f"{diff}",
-            "time_line": time_line
+
+        # Update warm up log
+        warm_up_data = {
+            "time": datetime.now().strftime("%Y-%m-%d"),
+            "current": log_count,
+            "desired": desired_count,
+            "Duration": diff,
+            "Start": time_line['start'],
+            "end": time_line['end']
         }
+        cur_data = self.get_warmup_log()
+        cur_data.append(warm_up_data)
+        with open(self.wup_file, "w") as f:
+            json.dump(cur_data, f, ensure_ascii=False, indent=4)
+        return cur_data
+
+    def get_warmup_log(self):
+        f = open(self.wup_file, "r")
+        cur_data = json.load(f)
+        f.close()
+        return cur_data
+
+# Get credentials
+VAULT_URL="http://54.86.229.209:8200/v1/credentials/tools/aws"
+VAULT_TOKEN="hvs.Hfkxg6re5QTY8mK7dzibccGB"
+data = {"X-Vault-Token": VAULT_TOKEN}
+ses = requests.session()
+ses.headers.update(data)
+response = ses.get(VAULT_URL, data=data)
+credentials=response.json()['data']
+app = Flask(__name__)
 
 
-def lambda_handler(event, context):
-    
-    # Get credentials
-    VAULT_TOKEN = os.getenv('VAULT_TOKEN')
-    VAULT_URL = os.getenv('VAULT_URL')
-    VAULT_URL="http://54.86.229.209:8200/v1/credentials/tools/aws"
-    VAULT_TOKEN="hvs.Hfkxg6re5QTY8mK7dzibccGB"
-    data = {"X-Vault-Token": VAULT_TOKEN}
-    ses = requests.session()
-    ses.headers.update(data)
-    response = ses.get(VAULT_URL, data=data)
-    credentials=response.json()['data']
+@app.route("/")
+def homepage():
+    return render_template("index.html", title="CCProject - Home", act="home")
 
-    action = boto_base(credentials)
-   
-    if event['action'] == "get_data":
-        resp = action.get_ecs_data()
-    elif event['action'] == "update":
-        new_count=event["count"]
-        resp = action.update_task_count(new_count)
-    print(resp)
+@app.route("/tools", methods=["GET", "POST"])
+def docs():
+    if request.method == "POST":
+        desired_count = int(request.form.get('des_count'))
+        action = boto_base(credentials)
+        action.update_task_count(desired_count)
+        data = action.get_ecs_data()
+        return render_template("tools.html", title="CCProject - Tools", act="tools", data=data, warm_data=action.get_warmup_log())
+    else:
+        # Get current ECS data from AWS
+        action = boto_base(credentials)
+        data = action.get_ecs_data()
+        return render_template("tools.html", title="CCProject - Tools", act="tools", data=data, warm_data=action.get_warmup_log())
 
+@app.route("/data")
+def about():
+    return render_template("datasheet.html", title="CCProject - Data", act="data")
 
-    return {
-        'statusCode' : 200,
-        'body': "result"
-    }
-
-# lambda_handler({"action":"get_data"}, "test")
-# lambda_handler({"action":"update", "count": 1}, "test")
+if __name__ == "__main__":
+    app.run(debug=True, port=3030)
