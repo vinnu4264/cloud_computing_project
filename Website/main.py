@@ -2,7 +2,8 @@ from flask import Flask, render_template, request
 import boto3, requests, json
 from datetime import datetime
 from time import sleep
-from data_get import Data_Processor
+import requests as reqs
+from threading import Thread
 
 class boto_base:
     
@@ -37,7 +38,6 @@ class boto_base:
     def warm_up_file_get(self):
         warm_up_file = json.loads(self.object.get()['Body'].read())
         return warm_up_file
-
 
     def get_ecs_data(self):
         # Tasks information
@@ -122,10 +122,45 @@ credentials=response.json()['data']
 app = Flask(__name__)
 
 
-@app.route("/")
+@app.route("/", methods=["GET", "POST"])
 def homepage():
-    d = Data_Processor()
-    return render_template("index.html", title="CCProject - Home", act="home", data=d)
+    action = boto_base(credentials)
+    data = action.get_ecs_data()
+    if request.method == "GET":
+        return render_template("index.html", title="CCProject - Home", act="home", data=data)
+    if request.method == "POST":
+        history = request.form.get("history")
+        shards = request.form.get("shards")
+        rtype = request.form.get("rtype")
+        count = request.form.get("count")
+        print(f"{history}, {shards}, {rtype}, {count}")
+        
+        # IF ECS
+        if rtype == "ECS":
+            url="http://EC2Co-EcsEl-KI9KTSENHTS0-831859272.us-east-1.elb.amazonaws.com:5000"
+            #! Function to get data
+            def thread_ecs():
+                response = reqs.get(url)
+                return response.text
+            # TODO List the ECS containers
+            threadlist = []
+
+            threadlist.append(Thread(target=thread_ecs))
+            threadlist.append(Thread(target=thread_ecs))
+            threadlist.append(Thread(target=thread_ecs))
+            threadlist.append(Thread(target=thread_ecs))
+
+            for thread in threadlist:
+                thread.start()
+
+            for t in threadlist:
+                t.join()
+            
+        # IF LAMBDA
+        elif rtype == "Lambda":
+            print("running from Lambda")
+
+        return render_template("index.html", title="CCProject - Home", act="home", data=data)
 
 @app.route("/tools", methods=["GET", "POST"])
 def docs():

@@ -31,7 +31,7 @@
     <div class="flexbox-item fi3">
         <form method="post">
             <label for="des_count" class="form-label">Desired number of containers</label>
-            <input type="range" class="form-range" min="0" max="10" step="1" name="des_count" id="des_count" value={{data.running_count}}  oninput="this.nextElementSibling.value = this.value">
+            <input type="range" class="form-range" min="0" max="4" step="1" name="des_count" id="des_count" value={{data.running_count}}  oninput="this.nextElementSibling.value = this.value">
             <output></output>
             <br>      
             <input onclick="$('#loading').show();" class="btn" value="Update" type="submit">

@@ -1,5 +1,54 @@
 {% extends "base.html" %}
 
 {% block body %}
-    {{data}}
+<form method="post">
+    <div class="d-flex p-3 text-black justify-content-around input-box">
+        <div class="p-2 ">
+            <label for="rtype" class="text-black">Resource type</label>
+            <select name="rtype" id="rtype" onchange="load_data()">
+                <option value="ECS">AWS ECS</option>
+                <option value="Lambda">AWS Lambda</option>
+            </select>
+        </div>
+        <div class="p-2">
+            <label for="count">Select count</label>
+            <select name="count" id="count" onchange="load_data()">
+                {% for i in range(1, data.running_count+1) %}
+                    <option value="{{i}}">{{i}}</option>
+                {% endfor %}
+            </select>
+            <label class="text-black"> / {{data.running_count}} currently running</label>
+        </div>
+        <div class="p-2">
+            <label for="shards">Shards</label>
+            <input type="number" name="shards" id="shards" placeholder="# of shards" min="100" value="100" onchange="load_data()">
+        </div>
+        <div class="p-2">
+            <label for="shards">History</label>
+            <input type="number" name="history" id="history" value="100" min="100" onchange="load_data()">
+        </div>
+    </div>
+    <center>
+        <div class="d-flex flex-column justify-content-center pt-3">
+            <p class="pt-2 text-center" style="color: teal;" id="data">test</p>
+            <input class="btn flex-lg-fill" type="submit" value="Submit">
+        </div>
+    </center>
+</form>
+
+<!-- Custom Java Script -->
+<script>
+
+    window.addEventListener('load', (event) => {
+        load_data()
+      });
+
+    function load_data(){
+        var type = document.getElementById("rtype").value
+        var count = document.getElementById("count").value
+        var shards = document.getElementById("shards").value
+        var history = document.getElementById("history").value
+        document.getElementById("data").textContent="Process data on "+type+" with "+count+" instance(s), "+shards+" shards and "+history+" history"
+    }
+</script>
 {% endblock %}

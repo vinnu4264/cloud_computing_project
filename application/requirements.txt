@@ -1,2 +1,6 @@
-pandas
 flask
+boto3
+requests
+yfinance
+pandas
+pandas_datareader
