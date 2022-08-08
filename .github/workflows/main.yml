@@ -24,7 +24,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Terraform apply with 
+      - name: Provision AWS Infrastructure
         run: |
           CREDS=$(curl -H "X-Vault-Token: $VAULT_TOKEN" -X GET $VAULT_URL | jq .data)
           export AWS_ACCESS_KEY_ID=$(echo $CREDS | jq .access_key | sed 's/\"//g' )
@@ -34,4 +34,3 @@ jobs:
           cd Terraform
           terraform init --reconfigure
           terraform apply --auto-approve -var VAULT_TOKEN=$VAULT_TOKEN
-

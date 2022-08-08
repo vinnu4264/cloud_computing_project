@@ -15,7 +15,7 @@ class boto_base:
             )
         self.client = self.session.client('ecs')
         # AWS S3 Connection
-        self.s3 = boto3.resource('s3')
+        self.s3 = self.session.resource('s3')
         self.object = self.s3.Object('cloud-computing-data-store','warm_up.json')
 
         self.wup_file = "data/warm_up.json"
@@ -104,6 +104,8 @@ class boto_base:
         with open("/tmp/warm_up.json", "w") as f:
             json.dump(cur_data, f, ensure_ascii=False, indent=4)
         self.put_warmup_log()
+        sleep(3)
+        print("Data written to S3")
         return cur_data
 
     def put_warmup_log(self):
