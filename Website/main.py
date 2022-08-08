@@ -2,7 +2,7 @@ from flask import Flask, render_template, request
 import boto3, requests, json
 from datetime import datetime
 from time import sleep
-
+from data_get import Data_Processor
 
 class boto_base:
     
@@ -124,7 +124,8 @@ app = Flask(__name__)
 
 @app.route("/")
 def homepage():
-    return render_template("index.html", title="CCProject - Home", act="home")
+    d = Data_Processor()
+    return render_template("index.html", title="CCProject - Home", act="home", data=d)
 
 @app.route("/tools", methods=["GET", "POST"])
 def docs():
