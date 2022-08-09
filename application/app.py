@@ -5,28 +5,32 @@ from random import randint
 
 app = Flask(__name__)
 
+
+def sleep_custom():
+    sleep(randint(1, 9))
+
 @app.route('/<test>')
 def sayHello(test):
     if test=="t1":
-        sleep(randint(9))
+        sleep_custom()
         return {
             "Name": f"{socket.gethostname()}",
             "Test": "Called t1"
         }
     elif test=="t2":
-        sleep(randint(9))
+        sleep_custom()
         return {
             "Name": f"{socket.gethostname()}",
             "Test": "Called t2"
         }
     elif test=="t3":
-        sleep(randint(9))
+        sleep_custom()
         return {
             "Name": f"{socket.gethostname()}",
             "Test": "Called t3"
         }
     else:
-        sleep(randint(9))
+        sleep_custom()
         return {
             "Name": f"{socket.gethostname()}",
             "Test": "Called Other"

@@ -46,12 +46,14 @@
 </div>
 <!-- Large modal -->
 <button type="button" class="btn btn-primary warm" data-toggle="modal" data-target=".bd-example-modal-lg">ECS Warming Log</button>
-<br>
-<!-- Refresh Containers -->
-<!-- <button class="btn refresh" onclick="switch_refresh()"><img id="lock" src="{{url_for('static', filename='images/locked.png')}}" width="30px" value="locked"></button>
-<br>
-<input type="button" id="btn_refresh" value="Refresh Containers" style="display: none;" class="btn btn-primary warm"> -->
+<!-- <br>
+<button class="btn refresh" onclick="switch_refresh()"><img id="lock" src="{{url_for('static', filename='images/locked.png')}}" width="30px" value="locked"></button>
+    <br>
 
+<form action="/tools1" method="GET">
+    <span name="place_holder" id="place_holder" hidden>{{data.running_count}}</span>
+    <input type="submit" id="btn_refresh" onclick="$('#refreshing').show();" value="Refresh Containers" style="display: none;" class="btn btn-primary warm">
+</form> -->
 <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">

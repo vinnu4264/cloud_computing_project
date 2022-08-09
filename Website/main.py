@@ -163,6 +163,15 @@ def homepage():
 
         return render_template("index.html", title="CCProject - Home", act="home", data=data)
 
+@app.route("/tools1")
+def refresh_pods():
+    desired_count = int(request.form.get('place_holder'))
+    action = boto_base(credentials)
+    action.update_task_count(0)
+    action.update_task_count(desired_count)
+    data = action.get_ecs_data()
+    return render_template("tools.html", title="CCProject - Tools", act="tools", data=data, warm_data=action.warm_up_file_get())
+
 @app.route("/tools", methods=["GET", "POST"])
 def docs():
     if request.method == "POST":

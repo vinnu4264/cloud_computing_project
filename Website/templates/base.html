@@ -24,6 +24,15 @@
         </div>
       </div>
     </div>
+    <div id="refreshing" class="modal" tabindex="-1" role="dialog">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content align-items-center">
+            <img class="rounded d-block w-50 h-50 rounded-circle" src="{{ url_for('static', filename='images/loading.webp') }}" alt="Loading!">
+            <h1 class="text-monospace">Killing all containers and recreating</h1>
+            <h3 class="text-monospace">Please wait...</h3>
+        </div>
+      </div>
+    </div>
 
     <!-- NAV BAR -->
     <nav class="navbar navbar-expand-lg bg-dark navbar-dark sticky-top">
