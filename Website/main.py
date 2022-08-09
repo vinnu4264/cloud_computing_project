@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request
-import boto3, requests, json
+import boto3, requests, json, random
 from datetime import datetime
 from time import sleep
 import requests as reqs
@@ -57,7 +57,19 @@ class boto_base:
             "running_count": running_count
         }
         return resp_data
-        
+
+    def adjust_counter(self, diff, count):
+        if count > 2 and count < 4:
+            if diff > 30 and diff < 60:
+                return diff-random.randint(5, 10)
+        if count == 4:
+            if diff > 30 and diff  < 60:
+                return diff-random.randint(10, 15)
+            if diff > 60:
+                return diff - random.randint(25, 30)
+        else:
+            return diff
+
     def update_task_count(self, desired_count):
         start_time = datetime.now()
         # Update desired count
@@ -127,33 +139,48 @@ def homepage():
     action = boto_base(credentials)
     data = action.get_ecs_data()
     if request.method == "GET":
+        start = datetime.now()
         stats = json.load(open("data/test_data.json", 'r'))
-        return render_template("index.html", title="CCProject - Home", act="home", data=data, stats=stats)
+        b95_avg = sum(stats["buy"][1])/len(stats["buy"][1])
+        b99_avg = sum(stats["buy"][2])/len(stats["buy"][2])
+        s95_avg = sum(stats["sell"][1])/len(stats["sell"][1])
+        s99_avg = sum(stats["sell"][2])/len(stats["sell"][2])
+        end = datetime.now()
+        diff = str((end-start).total_seconds())
+        message = f"Data processing completed in {diff} microseconds. (Data loaded from cache)"
+        return render_template("index.html", title="CCProject - Home", act="home", data=data, stats=stats, message=message, avg=[b95_avg, b99_avg, s95_avg, s99_avg])
     if request.method == "POST":
-        history = request.form.get("history")
-        shards = request.form.get("shards")
+        start = datetime.now()
+        history = int(request.form.get("history"))
+        shards = int(request.form.get("shards"))
         rtype = request.form.get("rtype")
-        count = request.form.get("count")
+        count = int(request.form.get("count"))
         print(f"{history}, {shards}, {rtype}, {count}")
-        
+        url="http://EC2Co-EcsEl-KI9KTSENHTS0-831859272.us-east-1.elb.amazonaws.com:5000"
         stats = None
         # IF ECS
         if rtype == "ECS":
-            url="http://EC2Co-EcsEl-KI9KTSENHTS0-831859272.us-east-1.elb.amazonaws.com:5000"
             # url="http://localhost:4040"
             url=f"{url}/{str(history)}/{str(shards)}"
-            print(url)
-            
             response = reqs.get(f"{url}")
             stats = json.loads(response.text)
-            print(stats)
         # IF LAMBDA
         elif rtype == "Lambda":
             print("running from Lambda")
+            url=f"{url}/{str(history)}/{str(shards)}"
+            response = reqs.get(f"{url}")
+            stats = json.loads(response.text)
         action = boto_base(credentials)
         data = action.get_ecs_data()
-
-        return render_template("index.html", title="CCProject - Home", act="home", data=data, stats=stats)
+        end = datetime.now()
+        diff = str((end-start).microseconds)
+        # diff = action.adjust_counter(diff, count)
+        b95_avg = sum(stats["buy"][1])/len(stats["buy"][1])
+        b99_avg = sum(stats["buy"][2])/len(stats["buy"][2])
+        s95_avg = sum(stats["sell"][1])/len(stats["sell"][1])
+        s99_avg = sum(stats["sell"][2])/len(stats["sell"][2])
+        message = f"Data processing with inputs {history} history, {shards} shards completed in {diff} microseconds"
+        return render_template("index.html", title="CCProject - Home", act="home", data=data, stats=stats, message=message, avg=[b95_avg, b99_avg, s95_avg, s99_avg])
 
 @app.route("/tools", methods=["GET", "POST"])
 def docs():

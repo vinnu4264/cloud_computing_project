@@ -1,6 +1,13 @@
 {% extends "base.html" %}
 
 {% block body %}
+<div id="dim_screen" class="dim_screen">
+    <center>
+    <div class="divElement">
+        <img src="{{ url_for('static', filename='images/l1.png') }}" alt="" width="500px">
+    </div>
+</center>
+</div>
 <form method="post">
     <div class="d-flex p-3 text-black justify-content-around input-box">
         <div class="p-2 ">
@@ -10,14 +17,22 @@
                 <option value="Lambda">AWS Lambda</option>
             </select>
         </div>
-        <div class="p-2">
+        <div class="p-2" id="ecs_t">
             <label for="count">Select count</label>
-            <select name="count" id="count" onchange="load_data()">
+            <select name="count" id="counte" onchange="load_data()">
                 {% for i in range(1, data.running_count+1) %}
                     <option value="{{i}}">{{i}}</option>
                 {% endfor %}
             </select>
             <label class="text-black"> / {{data.running_count}} currently running</label>
+        </div>
+        <div class="p-2" id="lambda_t">
+            <label for="count">Select count</label>
+            <select name="count" id="countl" onchange="load_data()">
+                {% for i in range(1, 4+1) %}
+                    <option value="{{i}}">{{i}}</option>
+                {% endfor %}
+            </select>
         </div>
         <div class="p-2">
             <label for="shards">History</label>
@@ -29,13 +44,18 @@
         </div>
     </div>
     <center>
-        <div class="d-flex flex-column justify-content-center pt-3">
+        <div class="d-flex flex-column justify-content-center pt-3 ">
             <p class="pt-1 text-center" style="color: teal;" id="data"></p>
-            <input class="btn flex-lg-fill warm" type="submit" value="Submit">
+            <input onclick="display_screen()" class="btn flex-lg-fill warm" type="submit" value="Submit">
         </div>
     </center>
 </form>
-<div class="d-flex p-3 text-black justify-content-around input-box" style="display: none;">
+<div style="text-align: center; color: blueviolet;">
+    {{ message }}
+</div>
+<div class="d-flex flex-column text-black justify-content-around input-box" style="display: none;">
+    <center>
+        <p class="pt-2 h5">Risk analysis on Buy Data: <span style="color: rgb(7, 0, 0); background-color: rgb(233, 200, 255);"> Avg 95% = {{avg[0]}}, Avg 99% = {{avg[1]}} </span></p>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <canvas id="lineChart" width="900" height="400" style="margin-bottom:10px;"></canvas>
     <script>
@@ -49,14 +69,14 @@
                         label: "Risk 95%",
                         data: {{ stats['buy'][1] | safe }},
                         fill: false,
-                        borderColor: "#FF8000",
+                        borderColor: "#6AD1AF",
                         
                     },
                     {
                         label: "Risk 99%",
                         data: {{ stats['buy'][2] | safe }},
                         fill: false,
-                        borderColor: "rgb(75, 192, 193)",
+                        borderColor: "#D17C6A",
                         
                     }
                 ]
@@ -66,20 +86,73 @@
             }
         });
     </script>
+    <br>
+    <p class="pt-2 h5">Risk analysis on Sell Data: <span style="color: rgb(7, 0, 0); background-color: rgb(233, 200, 255);"> Avg 95% = {{avg[2]}}, Avg 99% = {{avg[3]}} </span></p>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <canvas id="lineChart1" width="900" height="400" style="margin-bottom:10px;"></canvas>
+    <script>
+        var ctx = document.getElementById("lineChart1").getContext("2d")
+        var lc = new Chart(ctx, {
+            type: "line",
+            data: {
+                labels: {{ stats['sell'][0] | safe }},
+                datasets: [
+                    {
+                        label: "Risk 95%",
+                        data: {{ stats['sell'][1] | safe }},
+                        fill: false,
+                        borderColor: "#6AD1AF",
+                        
+                    },
+                    {
+                        label: "Risk 99%",
+                        data: {{ stats['sell'][2] | safe }},
+                        fill: false,
+                        borderColor: "#D17C6A",
+                        
+                    }
+                ]
+            },
+            options: {
+                responsive: false
+            }
+        });
+    </script>
+</center>
 </div>
 
 <script>
 
     window.addEventListener('load', (event) => {
         load_data()
+        document.getElementById("dim_screen").hidden = true
       });
 
     function load_data(){
         var type = document.getElementById("rtype").value
-        var count = document.getElementById("count").value
+
+        if (type === "Lambda"){
+            document.getElementById("ecs_t").style.display = "none"
+            document.getElementById("lambda_t").style.display = "block"
+            var count = document.getElementById("countl").value
+        }
+        if (type === "ECS"){
+            document.getElementById("ecs_t").style.display = "block"
+            document.getElementById("lambda_t").style.display = "none"
+            var count = document.getElementById("counte").value
+        }
+
         var shards = document.getElementById("shards").value
         var history = document.getElementById("history").value
         document.getElementById("data").textContent="Process data on "+type+" with "+count+" instance(s), "+shards+" shards and "+history+" history"
+
+        
     }
+
+    function display_screen() {
+        var x = document.getElementById("dim_screen")
+        x.hidden = false
+    }
+
 </script>
 {% endblock %}
