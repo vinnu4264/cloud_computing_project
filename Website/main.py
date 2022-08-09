@@ -135,29 +135,14 @@ def homepage():
         count = request.form.get("count")
         print(f"{history}, {shards}, {rtype}, {count}")
         
+        stats = None
         # IF ECS
         if rtype == "ECS":
-            stats = None
-            def thread_ecs():
-                url="http://EC2Co-EcsEl-KI9KTSENHTS0-831859272.us-east-1.elb.amazonaws.com:5000"
-                response = reqs.get(f"{url}")
-                stats = response.text
-                print(stats)
-                return stats
-            # TODO List the ECS containers
-            threadlist = []
-            threadlist.append(Thread(target=thread_ecs))
-            # threadlist.append(Thread(target=thread_ecs, args=["t1"]))
-            # threadlist.append(Thread(target=thread_ecs, args=["t2"]))
-            # threadlist.append(Thread(target=thread_ecs, args=["t3"]))
-            # threadlist.append(Thread(target=thread_ecs, args=["t4"]))
-
-
-            for thread in threadlist:
-                thread.start()
-
-            for t in threadlist:
-                t.join()
+            url="http://EC2Co-EcsEl-KI9KTSENHTS0-831859272.us-east-1.elb.amazonaws.com:5000"
+            # url="http://localhost:4040/101/80000"
+            response = reqs.get(f"{url}")
+            stats = response.text
+            print(stats)
             
         # IF LAMBDA
         elif rtype == "Lambda":
