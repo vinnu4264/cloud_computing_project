@@ -1,31 +1,32 @@
 from flask import Flask
 import socket
 from time import sleep
+from random import randint
 
 app = Flask(__name__)
 
 @app.route('/<test>')
 def sayHello(test):
     if test=="t1":
-        sleep(20)
+        sleep(randint(9))
         return {
             "Name": f"{socket.gethostname()}",
             "Test": "Called t1"
         }
     elif test=="t2":
-        sleep(20)
+        sleep(randint(9))
         return {
             "Name": f"{socket.gethostname()}",
             "Test": "Called t2"
         }
     elif test=="t3":
-        sleep(20)
+        sleep(randint(9))
         return {
             "Name": f"{socket.gethostname()}",
-            "Test": "Called t2"
+            "Test": "Called t3"
         }
     else:
-        sleep(20)
+        sleep(randint(9))
         return {
             "Name": f"{socket.gethostname()}",
             "Test": "Called Other"

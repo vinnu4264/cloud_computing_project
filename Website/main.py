@@ -149,9 +149,7 @@ def homepage():
             threadlist.append(Thread(target=thread_ecs, args=["t2"]))
             threadlist.append(Thread(target=thread_ecs, args=["t3"]))
             threadlist.append(Thread(target=thread_ecs, args=["t4"]))
-            # threadlist.append(Thread(target=thread_ecs))
-            # threadlist.append(Thread(target=thread_ecs))
-            # threadlist.append(Thread(target=thread_ecs))
+
 
             for thread in threadlist:
                 thread.start()

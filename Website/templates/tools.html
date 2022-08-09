@@ -34,7 +34,7 @@
             <input type="range" class="form-range" min="0" max="4" step="1" name="des_count" id="des_count" value={{data.running_count}}  oninput="this.nextElementSibling.value = this.value">
             <output></output>
             <br>      
-            <input onclick="$('#loading').show();" class="btn" value="Update" type="submit">
+            <input onclick="$('#loading').show();" class="btn warm" value="Update" type="submit">
         </form>
     </div>
     <!-- <div class="flexbox-item fi4">
@@ -46,6 +46,11 @@
 </div>
 <!-- Large modal -->
 <button type="button" class="btn btn-primary warm" data-toggle="modal" data-target=".bd-example-modal-lg">ECS Warming Log</button>
+<br>
+<!-- Refresh Containers -->
+<!-- <button class="btn refresh" onclick="switch_refresh()"><img id="lock" src="{{url_for('static', filename='images/locked.png')}}" width="30px" value="locked"></button>
+<br>
+<input type="button" id="btn_refresh" value="Refresh Containers" style="display: none;" class="btn btn-primary warm"> -->
 
 <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">
@@ -80,6 +85,19 @@
   </div>
 </div>
 </center>
+
+<!-- Custom Script -->
+<script>
+    function switch_refresh(){
+        var disp = document.getElementById('btn_refresh');
+        if (disp.style.display === "none"){
+            disp.style.display = "block"
+        }
+        else{
+            disp.style.display = "none"
+        }
+    }
+</script>
 
 
 {% endblock %}

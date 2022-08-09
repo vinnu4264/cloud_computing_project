@@ -5,12 +5,14 @@
 
 
 /* TOOLS PAGE STYLING */
-.btn{
+.btn.warm{
     background-color: rgb(47, 68, 68) !important; 
     color: antiquewhite !important;
     margin-top: 10px !important;
     margin-bottom: 10px !important;
     width: 150px;
+    width: fit-content;
+    text-decoration: none;
 }
 
 .row-header{
@@ -53,6 +55,8 @@
     padding: 10px;
 }
 
-.btn.warm{
-    width: fit-content;
+
+.refresh:hover{
+    background-color: orange !important;
+    color: black;
 }
