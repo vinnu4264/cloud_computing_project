@@ -20,27 +20,54 @@
             <label class="text-black"> / {{data.running_count}} currently running</label>
         </div>
         <div class="p-2">
-            <label for="shards">Shards</label>
-            <input type="number" name="shards" id="shards" placeholder="# of shards" min="100" value="100" onchange="load_data()">
-        </div>
-        <div class="p-2">
             <label for="shards">History</label>
             <input type="number" name="history" id="history" value="100" min="100" onchange="load_data()">
+        </div>
+        <div class="p-2">
+            <label for="shards">Shards</label>
+            <input type="number" name="shards" id="shards" placeholder="# of shards" min="1000" value="20000" onchange="load_data()">
         </div>
     </div>
     <center>
         <div class="d-flex flex-column justify-content-center pt-3">
-            <p class="pt-2 text-center" style="color: teal;" id="data"></p>
+            <p class="pt-1 text-center" style="color: teal;" id="data"></p>
             <input class="btn flex-lg-fill warm" type="submit" value="Submit">
         </div>
     </center>
 </form>
-
-<div>
-    {{ stats }}
+<div class="d-flex p-3 text-black justify-content-around input-box" style="display: none;">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <canvas id="lineChart" width="900" height="400" style="margin-bottom:10px;"></canvas>
+    <script>
+        var ctx = document.getElementById("lineChart").getContext("2d")
+        var lc = new Chart(ctx, {
+            type: "line",
+            data: {
+                labels: {{ stats['buy'][0] | safe }},
+                datasets: [
+                    {
+                        label: "Risk 95%",
+                        data: {{ stats['buy'][1] | safe }},
+                        fill: false,
+                        borderColor: "#FF8000",
+                        
+                    },
+                    {
+                        label: "Risk 99%",
+                        data: {{ stats['buy'][2] | safe }},
+                        fill: false,
+                        borderColor: "rgb(75, 192, 193)",
+                        
+                    }
+                ]
+            },
+            options: {
+                responsive: false
+            }
+        });
+    </script>
 </div>
 
-<!-- Custom Java Script -->
 <script>
 
     window.addEventListener('load', (event) => {

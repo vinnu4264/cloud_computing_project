@@ -69,6 +69,10 @@ def tester(history, shots):
     stats_data = process_data(int(history), int(shots))
     return stats_data
 
+@app.route("/")
+def health_check():
+    return "Hello World!"
+
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000)
-    # app.run(debug=True, port=4040)
+    # app.run(host="0.0.0.0", port=5000)
+    app.run(debug=True, port=4040)

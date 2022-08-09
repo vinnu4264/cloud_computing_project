@@ -127,7 +127,8 @@ def homepage():
     action = boto_base(credentials)
     data = action.get_ecs_data()
     if request.method == "GET":
-        return render_template("index.html", title="CCProject - Home", act="home", data=data)
+        stats = json.load(open("data/test_data.json", 'r'))
+        return render_template("index.html", title="CCProject - Home", act="home", data=data, stats=stats)
     if request.method == "POST":
         history = request.form.get("history")
         shards = request.form.get("shards")
@@ -139,16 +140,19 @@ def homepage():
         # IF ECS
         if rtype == "ECS":
             url="http://EC2Co-EcsEl-KI9KTSENHTS0-831859272.us-east-1.elb.amazonaws.com:5000"
-            # url="http://localhost:4040/101/80000"
-            response = reqs.get(f"{url}")
-            stats = response.text
-            print(stats)
+            url="http://localhost:4040/"
+            url=f"{url}/{str(history)}/{str(shards)}"
+            print(url)
             
+            response = reqs.get(f"{url}")
+            stats = json.loads(response.text)
+            print(stats)
         # IF LAMBDA
         elif rtype == "Lambda":
             print("running from Lambda")
         action = boto_base(credentials)
         data = action.get_ecs_data()
+        
         return render_template("index.html", title="CCProject - Home", act="home", data=data, stats=stats)
 
 @app.route("/tools", methods=["GET", "POST"])
