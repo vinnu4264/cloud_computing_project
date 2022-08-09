@@ -137,18 +137,20 @@ def homepage():
         
         # IF ECS
         if rtype == "ECS":
-            def thread_ecs(t):
+            stats = None
+            def thread_ecs():
                 url="http://EC2Co-EcsEl-KI9KTSENHTS0-831859272.us-east-1.elb.amazonaws.com:5000"
-                response = reqs.get(f"{url}/{t}")
-                print(response.text)
-                return response.text
+                response = reqs.get(f"{url}")
+                stats = response.text
+                print(stats)
+                return stats
             # TODO List the ECS containers
             threadlist = []
-
-            threadlist.append(Thread(target=thread_ecs, args=["t1"]))
-            threadlist.append(Thread(target=thread_ecs, args=["t2"]))
-            threadlist.append(Thread(target=thread_ecs, args=["t3"]))
-            threadlist.append(Thread(target=thread_ecs, args=["t4"]))
+            threadlist.append(Thread(target=thread_ecs))
+            # threadlist.append(Thread(target=thread_ecs, args=["t1"]))
+            # threadlist.append(Thread(target=thread_ecs, args=["t2"]))
+            # threadlist.append(Thread(target=thread_ecs, args=["t3"]))
+            # threadlist.append(Thread(target=thread_ecs, args=["t4"]))
 
 
             for thread in threadlist:
@@ -160,17 +162,9 @@ def homepage():
         # IF LAMBDA
         elif rtype == "Lambda":
             print("running from Lambda")
-
-        return render_template("index.html", title="CCProject - Home", act="home", data=data)
-
-@app.route("/tools1")
-def refresh_pods():
-    desired_count = int(request.form.get('place_holder'))
-    action = boto_base(credentials)
-    action.update_task_count(0)
-    action.update_task_count(desired_count)
-    data = action.get_ecs_data()
-    return render_template("tools.html", title="CCProject - Tools", act="tools", data=data, warm_data=action.warm_up_file_get())
+        action = boto_base(credentials)
+        data = action.get_ecs_data()
+        return render_template("index.html", title="CCProject - Home", act="home", data=data, stats=stats)
 
 @app.route("/tools", methods=["GET", "POST"])
 def docs():
