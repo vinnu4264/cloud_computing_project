@@ -140,7 +140,7 @@ def homepage():
         # IF ECS
         if rtype == "ECS":
             url="http://EC2Co-EcsEl-KI9KTSENHTS0-831859272.us-east-1.elb.amazonaws.com:5000"
-            url="http://localhost:4040/"
+            # url="http://localhost:4040"
             url=f"{url}/{str(history)}/{str(shards)}"
             print(url)
             
@@ -152,7 +152,7 @@ def homepage():
             print("running from Lambda")
         action = boto_base(credentials)
         data = action.get_ecs_data()
-        
+
         return render_template("index.html", title="CCProject - Home", act="home", data=data, stats=stats)
 
 @app.route("/tools", methods=["GET", "POST"])
