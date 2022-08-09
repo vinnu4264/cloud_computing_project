@@ -15,30 +15,33 @@ def tester():
 
 @app.route('/custom/<test>')
 def sayHello(test):
-    if test=="t1":
+    d = collect_data()
+    stats_data = d.hammer()
+    return stats_data
+    # if test=="t1":
         
-        return {
-            "Name": f"{socket.gethostname()}",
-            "Test": "Called t1"
-        }
-    elif test=="t2":
+    #     return {
+    #         "Name": f"{socket.gethostname()}",
+    #         "Test": "Called t1"
+    #     }
+    # elif test=="t2":
         
-        return {
-            "Name": f"{socket.gethostname()}",
-            "Test": "Called t2"
-        }
-    elif test=="t3":
+    #     return {
+    #         "Name": f"{socket.gethostname()}",
+    #         "Test": "Called t2"
+    #     }
+    # elif test=="t3":
         
-        return {
-            "Name": f"{socket.gethostname()}",
-            "Test": "Called t3"
-        }
-    else:
+    #     return {
+    #         "Name": f"{socket.gethostname()}",
+    #         "Test": "Called t3"
+    #     }
+    # else:
         
-        return {
-            "Name": f"{socket.gethostname()}",
-            "Test": "Called Other"
-        }
+    #     return {
+    #         "Name": f"{socket.gethostname()}",
+    #         "Test": "Called Other"
+    #     }
     
     
 
