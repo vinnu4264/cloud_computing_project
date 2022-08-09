@@ -137,18 +137,21 @@ def homepage():
         
         # IF ECS
         if rtype == "ECS":
-            url="http://EC2Co-EcsEl-KI9KTSENHTS0-831859272.us-east-1.elb.amazonaws.com:5000"
-            #! Function to get data
-            def thread_ecs():
-                response = reqs.get(url)
+            def thread_ecs(t):
+                url="http://EC2Co-EcsEl-KI9KTSENHTS0-831859272.us-east-1.elb.amazonaws.com:5000"
+                response = reqs.get(f"{url}/{t}")
+                print(response.text)
                 return response.text
             # TODO List the ECS containers
             threadlist = []
 
-            threadlist.append(Thread(target=thread_ecs))
-            threadlist.append(Thread(target=thread_ecs))
-            threadlist.append(Thread(target=thread_ecs))
-            threadlist.append(Thread(target=thread_ecs))
+            threadlist.append(Thread(target=thread_ecs, args=["t1"]))
+            threadlist.append(Thread(target=thread_ecs, args=["t2"]))
+            threadlist.append(Thread(target=thread_ecs, args=["t3"]))
+            threadlist.append(Thread(target=thread_ecs, args=["t4"]))
+            # threadlist.append(Thread(target=thread_ecs))
+            # threadlist.append(Thread(target=thread_ecs))
+            # threadlist.append(Thread(target=thread_ecs))
 
             for thread in threadlist:
                 thread.start()
